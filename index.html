@@ -4,24 +4,42 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>메인 Aside · 관제 센터</title>
+<meta name="theme-color" content="#02030a">
+<title>FIXER · 픽서</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#05060b;color:#eef0f8;font-family:"Pretendard Variable",Pretendard,sans-serif;-webkit-font-smoothing:antialiased}
-.login{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(700px 480px at 50% 45%,rgba(91,95,239,.18),transparent 70%),#05060b;transition:opacity .8s,filter .8s}
-.login.out{opacity:0;filter:blur(14px);pointer-events:none}
-.orb{position:absolute;width:min(560px,110vw);aspect-ratio:1;border-radius:50%;background:conic-gradient(from 0deg,#5B5FEF,#9B7BFF,#ff8fb1,#ffc48a,#5B5FEF);filter:blur(80px);opacity:.22;animation:spin 18s linear infinite}
+*{box-sizing:border-box}body{margin:0;background:#02030a;color:#eaf6ff;font-family:"Pretendard Variable",Pretendard,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+.login{position:fixed;inset:0;display:grid;place-items:center;transition:opacity .9s,filter .9s;
+ background:radial-gradient(700px 500px at 50% 42%,rgba(34,211,238,.14),transparent 70%),radial-gradient(900px 600px at 80% 0%,rgba(139,92,246,.16),transparent 60%),#02030a}
+.login.out{opacity:0;filter:blur(16px);pointer-events:none}
+.login .grid{position:absolute;inset:0;background-image:linear-gradient(rgba(120,200,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(120,200,255,.06) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(ellipse at 50% 45%,#000 20%,transparent 75%)}
+.login .floor{position:absolute;left:-50%;right:-50%;bottom:-10%;height:55%;background-image:linear-gradient(rgba(34,211,238,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.18) 1px,transparent 1px);background-size:60px 60px;transform:perspective(500px) rotateX(62deg);transform-origin:top;mask-image:linear-gradient(#000,transparent 85%);animation:move 3s linear infinite}
+@keyframes move{to{background-position:0 60px}}
+.login .core{position:absolute;width:min(520px,95vw);aspect-ratio:1;top:50%;left:50%;transform:translate(-50%,-56%)}
+.login .core i{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(155,232,255,.18)}
+.login .core i:nth-child(1){inset:4%;border-style:dashed;animation:spin 40s linear infinite}
+.login .core i:nth-child(2){inset:12%;border-color:transparent;border-top-color:rgba(34,211,238,.7);border-right-color:rgba(139,92,246,.5);animation:spin 7s linear infinite reverse}
+.login .core i:nth-child(3){inset:22%;border-color:rgba(139,92,246,.25);animation:spin 16s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.box{position:relative;width:min(380px,90vw);padding:34px 30px;border-radius:24px;background:rgba(12,13,24,.78);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(18px);text-align:center}
-.lg{width:48px;height:48px;border-radius:14px;margin:0 auto 18px;background:conic-gradient(from 200deg,#5B5FEF,#9B7BFF,#ff8fb1,#ffc48a,#5B5FEF);box-shadow:0 10px 30px rgba(91,95,239,.45)}
-h1{margin:0 0 6px;font-size:21px;letter-spacing:-.4px}p{margin:0 0 22px;color:#9aa0b6;font-size:13px;line-height:1.6}
-#gbtn{display:flex;justify-content:center;min-height:44px}.err{color:#fca5a5;font-size:12.5px;margin-top:12px;min-height:18px}
+.login .box{position:relative;width:min(400px,90vw);padding:36px 32px 30px;border-radius:22px;background:rgba(6,12,28,.72);border:1px solid rgba(120,200,255,.2);backdrop-filter:blur(18px);text-align:center;box-shadow:0 0 60px rgba(34,211,238,.12),inset 0 1px 0 rgba(155,232,255,.08)}
+.login .box::before,.login .box::after{content:'';position:absolute;width:20px;height:20px;border:2px solid #22d3ee}
+.login .box::before{top:-1px;left:-1px;border-width:2px 0 0 2px;border-radius:22px 0 0 0}.login .box::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0;border-radius:0 0 22px 0}
+.login .orb{width:64px;height:64px;margin:0 auto 18px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#c7f9ff,#22d3ee 30%,#8b5cf6 65%,#1a0b3d);box-shadow:0 0 30px rgba(34,211,238,.6),0 0 80px rgba(139,92,246,.4);animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 44px rgba(34,211,238,.85),0 0 110px rgba(139,92,246,.55)}}
+.login .sys{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:2.6px;color:#22d3ee;margin-bottom:10px}
+.login h1{margin:0;font-family:Orbitron,sans-serif;font-weight:800;font-size:34px;letter-spacing:6px;background:linear-gradient(90deg,#c7f9ff,#22d3ee,#a78bfa);-webkit-background-clip:text;color:transparent}
+.login .ko{font-size:13px;color:#93a4c3;margin:6px 0 22px;letter-spacing:.5px}
+.login p{margin:0 0 22px;color:#93a4c3;font-size:12.5px;line-height:1.7}
+.login #gbtn{display:flex;justify-content:center;min-height:44px}.login .err{color:#ff8fa3;font-size:12.5px;margin-top:12px;min-height:18px}
+.login .foot{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:1.6px;color:#556283;margin-top:14px}
 </style>
 </head>
 <body>
-<div class="login" id="login"><div class="orb"></div>
- <div class="box"><div class="lg"></div><h1>메인 Aside 관제 센터</h1><p>서동현 대표님 전용이에요.<br>대표님 구글 계정으로 로그인해 주세요.</p><div id="gbtn"></div><div class="err" id="err"></div></div>
+<div class="login" id="login"><div class="grid"></div><div class="floor"></div><div class="core"><i></i><i></i><i></i></div>
+ <div class="box"><div class="orb"></div><div class="sys">// SECURE ACCESS</div><h1>FIXER</h1><div class="ko">픽서 · 메인 Aside 중앙 제어</div><p>서동현 대표님 전용이에요.<br>대표님 구글 계정으로 들어와 주세요.</p><div id="gbtn"></div><div class="err" id="err"></div><div class="foot">AUTH · OWNER ACCOUNT ONLY</div></div>
 </div>
 <script>
 const API = 'https://cevfpygufmkxhodtcwcb.supabase.co/functions/v1/hq';
@@ -34,7 +52,7 @@ async function start(token, me) {
   if (!r.ok) { err('화면을 불러오지 못했어요 (' + r.status + ')'); showLogin(); return; }
   const code = await r.text();
   const s = document.createElement('script'); s.src = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
-  s.onload = () => { document.getElementById('login').classList.add('out'); setTimeout(() => window.HQ_START({ api: API, token, logout, ...(me || {}) }), 300); };
+  s.onload = () => { document.body.style.overflow = 'auto'; document.getElementById('login').classList.add('out'); setTimeout(() => window.HQ_START({ api: API, token, logout, ...(me || {}) }), 300); };
   document.head.appendChild(s);
 }
 async function onCred(res) {
