@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>메인 Aside · 관제 센터</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#05060b;color:#eef0f8;font-family:"Pretendard Variable",Pretendard,sans-serif;-webkit-font-smoothing:antialiased}
+.login{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(700px 480px at 50% 45%,rgba(91,95,239,.18),transparent 70%),#05060b;transition:opacity .8s,filter .8s}
+.login.out{opacity:0;filter:blur(14px);pointer-events:none}
+.orb{position:absolute;width:min(560px,110vw);aspect-ratio:1;border-radius:50%;background:conic-gradient(from 0deg,#5B5FEF,#9B7BFF,#ff8fb1,#ffc48a,#5B5FEF);filter:blur(80px);opacity:.22;animation:spin 18s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.box{position:relative;width:min(380px,90vw);padding:34px 30px;border-radius:24px;background:rgba(12,13,24,.78);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(18px);text-align:center}
+.lg{width:48px;height:48px;border-radius:14px;margin:0 auto 18px;background:conic-gradient(from 200deg,#5B5FEF,#9B7BFF,#ff8fb1,#ffc48a,#5B5FEF);box-shadow:0 10px 30px rgba(91,95,239,.45)}
+h1{margin:0 0 6px;font-size:21px;letter-spacing:-.4px}p{margin:0 0 22px;color:#9aa0b6;font-size:13px;line-height:1.6}
+#gbtn{display:flex;justify-content:center;min-height:44px}.err{color:#fca5a5;font-size:12.5px;margin-top:12px;min-height:18px}
+</style>
+</head>
+<body>
+<div class="login" id="login"><div class="orb"></div>
+ <div class="box"><div class="lg"></div><h1>메인 Aside 관제 센터</h1><p>서동현 대표님 전용이에요.<br>대표님 구글 계정으로 로그인해 주세요.</p><div id="gbtn"></div><div class="err" id="err"></div></div>
+</div>
+<script>
+const API = 'https://cevfpygufmkxhodtcwcb.supabase.co/functions/v1/hq';
+const CID = '302524415108-7d4bu3uicpkct4vrdqu35jij9e070j95.apps.googleusercontent.com';
+const err = (t) => { document.getElementById('err').textContent = t || ''; };
+function logout() { const t = localStorage.getItem('hq_token'); if (t) fetch(API + '/auth/logout', { method: 'POST', headers: { authorization: 'Bearer ' + t } }).catch(() => {}); localStorage.removeItem('hq_token'); localStorage.removeItem('hq_me'); location.reload(); }
+async function start(token, me) {
+  const r = await fetch(API + '/ui', { headers: { authorization: 'Bearer ' + token } });
+  if (r.status === 401) { localStorage.removeItem('hq_token'); showLogin(); return; }
+  if (!r.ok) { err('화면을 불러오지 못했어요 (' + r.status + ')'); showLogin(); return; }
+  const code = await r.text();
+  const s = document.createElement('script'); s.src = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+  s.onload = () => { document.getElementById('login').classList.add('out'); setTimeout(() => window.HQ_START({ api: API, token, logout, ...(me || {}) }), 300); };
+  document.head.appendChild(s);
+}
+async function onCred(res) {
+  err('');
+  try {
+    const r = await fetch(API + '/auth/google', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ credential: res.credential }) });
+    const j = await r.json();
+    if (!r.ok) { err(j.error || '로그인 실패'); return; }
+    localStorage.setItem('hq_token', j.token); localStorage.setItem('hq_me', JSON.stringify({ name: j.name, email: j.email }));
+    start(j.token, { name: j.name, email: j.email });
+  } catch (e) { err('연결 오류: ' + e.message); }
+}
+function showLogin() {
+  const go = () => { if (!window.google || !google.accounts) return setTimeout(go, 200);
+    google.accounts.id.initialize({ client_id: CID, callback: onCred, auto_select: true, login_hint: 'tjgus537@gmail.com' });
+    google.accounts.id.renderButton(document.getElementById('gbtn'), { theme: 'filled_black', size: 'large', shape: 'pill', text: 'signin_with', locale: 'ko' });
+  }; go();
+}
+const saved = localStorage.getItem('hq_token');
+if (saved) start(saved, JSON.parse(localStorage.getItem('hq_me') || '{}')); else showLogin();
+</script>
+</body>
+</html>
