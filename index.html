@@ -42,12 +42,26 @@
 .login p{margin:0 0 22px;color:#93a4c3;font-size:12.5px;line-height:1.7}
 .login #gbtn{display:flex;justify-content:center;min-height:44px}.login .err{color:#ff8fa3;font-size:12.5px;margin-top:12px;min-height:18px}
 @media (max-width:560px){.login .box{padding:30px 22px 26px}.login h1{font-size:30px}.login .core{width:120vw}}
+.login .tabs{display:flex;gap:4px;padding:4px;margin:0 0 16px;border-radius:12px;background:rgba(4,8,20,.7);border:1px solid rgba(120,200,255,.14)}
+.login .tabs button{flex:1;padding:9px 0;border:0;border-radius:9px;background:none;color:#93a4c3;font:600 12.5px Pretendard,system-ui,sans-serif;cursor:pointer;transition:.25s}
+.login .tabs button.on{background:linear-gradient(90deg,rgba(34,211,238,.2),rgba(139,92,246,.16));color:#fff;box-shadow:inset 0 0 0 1px rgba(34,211,238,.35)}
+.login .pane{display:none}.login .pane.on{display:flex;flex-direction:column;gap:9px}.login .pane[data-p=g].on{display:block}
+.login .pane input{width:100%;box-sizing:border-box;padding:13px 14px;border-radius:12px;border:1px solid rgba(120,200,255,.2);background:rgba(4,8,20,.85);color:#e8f1ff;font-size:16px;outline:none;transition:.25s}
+.login .pane input:focus{border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+.login .rw{display:flex;gap:8px}.login .rw input{flex:1;min-width:0}
+.login .go{padding:13px;border:0;border-radius:12px;background:linear-gradient(120deg,#22d3ee,#8b5cf6);color:#02030a;font:800 14px Pretendard,system-ui,sans-serif;cursor:pointer;box-shadow:0 0 24px rgba(34,211,238,.35)}
+.login .go.s{padding:0 14px;font-size:12.5px;white-space:nowrap}.login .go:disabled{opacity:.5;cursor:default}
+.login .note{font-size:11.5px;color:#93a4c3;line-height:1.6;min-height:16px}
 .login .foot{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:1.6px;color:#556283;margin-top:14px}
 </style>
 </head>
 <body>
 <div class="login" id="login"><div class="grid"></div><div class="floor"></div><div class="core"><i></i><i></i><i></i></div>
- <div class="box"><div class="orb"></div><div class="sys">// SECURE ACCESS</div><h1>FIXER</h1><div class="ko">픽서 · 메인 Aside 중앙 제어</div><p>서동현 대표님 전용이에요.<br>대표님 구글 계정으로 들어와 주세요.</p><div id="gbtn"></div><div class="err" id="err"></div><div class="foot">AUTH · OWNER ACCOUNT ONLY</div></div>
+ <div class="box"><div class="orb"></div><div class="sys">// SECURE ACCESS</div><h1>FIXER</h1><div class="ko">픽서 · 메인 Aside 중앙 제어</div><p>서동현 대표님 전용이에요.</p>
+  <div class="tabs" id="tabs"><button data-t="g" class="on">구글</button><button data-t="id">아이디</button><button data-t="ph">휴대폰 인증</button></div>
+  <div class="pane on" data-p="g"><div id="gbtn"></div></div>
+  <form class="pane" data-p="id" id="f-id" autocomplete="on"><input id="l-id" name="username" autocomplete="username" placeholder="아이디" autocapitalize="off"><input id="l-pw" name="password" type="password" autocomplete="current-password" placeholder="비밀번호"><button class="go" type="submit">로그인</button></form>
+  <form class="pane" data-p="ph" id="f-ph"><div class="rw"><input id="l-ph" type="tel" inputmode="numeric" autocomplete="tel" placeholder="휴대폰 번호 (- 없이)"><button class="go s" type="button" id="b-send">인증번호 받기</button></div><input id="l-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="인증번호 6자리" style="display:none"><button class="go" type="submit" id="b-ver" style="display:none">확인하고 들어가기</button><div class="note" id="ph-note"></div></form><div class="err" id="err"></div><div class="foot">AUTH · OWNER ACCOUNT ONLY</div></div>
 </div>
 <script>
 const API = 'https://cevfpygufmkxhodtcwcb.supabase.co/functions/v1/hq';
@@ -69,10 +83,23 @@ async function onCred(res) {
     const r = await fetch(API + '/auth/google', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ credential: res.credential }) });
     const j = await r.json();
     if (!r.ok) { err(j.error || '로그인 실패'); return; }
-    localStorage.setItem('hq_token', j.token); localStorage.setItem('hq_me', JSON.stringify({ name: j.name, email: j.email }));
-    start(j.token, { name: j.name, email: j.email });
+    done(j);
   } catch (e) { err('연결 오류: ' + e.message); }
 }
+function done(j) { localStorage.setItem('hq_token', j.token); localStorage.setItem('hq_me', JSON.stringify({ name: j.name, email: j.email })); start(j.token, { name: j.name, email: j.email }); }
+async function post(path, body) { const r = await fetch(API + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || ('오류 ' + r.status)); return j; }
+document.querySelectorAll('#tabs button').forEach((b) => b.onclick = () => { err(''); document.querySelectorAll('#tabs button').forEach((x) => x.classList.toggle('on', x === b)); document.querySelectorAll('.pane').forEach((p) => p.classList.toggle('on', p.dataset.p === b.dataset.t)); localStorage.setItem('hq_tab', b.dataset.t); const f = document.querySelector('.pane.on input'); if (f) f.focus(); });
+document.getElementById('f-id').onsubmit = async (e) => { e.preventDefault(); err(''); try { done(await post('/auth/password', { id: document.getElementById('l-id').value, pw: document.getElementById('l-pw').value })); } catch (x) { err(x.message); } };
+let cool = 0;
+document.getElementById('b-send').onclick = async () => {
+  err(''); const ph = document.getElementById('l-ph').value.replace(/\D/g, ''); if (ph.length < 10) { err('휴대폰 번호를 확인해 주세요.'); return; }
+  const b = document.getElementById('b-send'); b.disabled = true;
+  try { const j = await post('/auth/phone/send', { phone: ph }); document.getElementById('ph-note').textContent = j.msg + ' (5분 안에 입력)'; document.getElementById('l-code').style.display = ''; document.getElementById('b-ver').style.display = ''; document.getElementById('l-code').focus();
+    cool = 60; const t = setInterval(() => { cool--; b.textContent = cool > 0 ? cool + '초 뒤 재전송' : '다시 받기'; if (cool <= 0) { clearInterval(t); b.disabled = false; } }, 1000);
+  } catch (x) { err(x.message); b.disabled = false; }
+};
+document.getElementById('f-ph').onsubmit = async (e) => { e.preventDefault(); err(''); try { done(await post('/auth/phone/verify', { phone: document.getElementById('l-ph').value.replace(/\D/g, ''), code: document.getElementById('l-code').value.trim() })); } catch (x) { err(x.message); } };
+{ const lt = localStorage.getItem('hq_tab'); if (lt) { const b = document.querySelector('#tabs button[data-t="' + lt + '"]'); if (b) b.click(); } }
 function showLogin() {
   const go = () => { if (!window.google || !google.accounts) return setTimeout(go, 200);
     google.accounts.id.initialize({ client_id: CID, callback: onCred, auto_select: true, login_hint: 'tjgus537@gmail.com' });
