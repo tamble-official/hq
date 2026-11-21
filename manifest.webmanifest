@@ -1,0 +1,19 @@
+{
+  "name": "픽서 · FIXER",
+  "short_name": "픽서",
+  "description": "서동현 대표 전용 메인 Aside 관제 센터",
+  "id": "/hq/",
+  "start_url": "/hq/?app=1",
+  "scope": "/hq/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait",
+  "background_color": "#02030a",
+  "theme_color": "#02030a",
+  "lang": "ko",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
